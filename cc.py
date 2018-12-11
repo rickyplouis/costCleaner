@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 from tabulate import tabulate
 testPath = 'input.xlsx'
 
@@ -23,7 +24,6 @@ def cleanSpreadsheet(filepath):
     cleanedDF = convertIndex(cleanedDF)
     return cleanedDF
 
-
 def convertIndex(df):
     df.index = pd.to_datetime(df['Date'])
     return df
@@ -33,14 +33,22 @@ def sortByDate(df):
     return sortedDF
 
 def getCostByMonth(df):
-    return df.resample('M')['Cost'].sum()
+    newDF = df.groupby([df.index.month])['Cost'].sum()
+    newDF.index.rename('Month', inplace=True)
+    return newDF
 
 def getCostByType(df):
     newDF = df.replace({'Cost Type': costCodes})
     return newDF.groupby(['Cost Type'])['Cost'].sum()
 
 def getCostByMonthAndType(df):
-    return df.groupby([df.index.month, 'Cost Type'])['Cost'].sum()
+    newDF = df.replace({'Cost Type': costCodes})
+    newDF = newDF.groupby([df.index.month, 'Cost Type'])['Cost'].sum()
+    newDF.index.rename(['Month', 'Cost Type'], inplace=True)
+    return newDF
+
+def writeStatsToFile(df, filename):
+    df.describe().to_csv(filename+'.txt', header=False, index=True, sep=' ')
 
 def writeToExcel(df):
     df0 = cleanSpreadsheet(testPath)
@@ -48,13 +56,14 @@ def writeToExcel(df):
     df2 = getCostByMonth(df0)
     df3 = getCostByMonthAndType(df0)
     writer = pd.ExcelWriter('output.xlsx')
-    df1.to_excel(writer, 'Sheet1')
-    df2.to_excel(writer, 'Sheet2')
-    df3.to_excel(writer, 'Sheet3')
+    df1.to_excel(writer, 'CostByType')
+    writeStatsToFile(df1, 'CostByType__Summary')
+    df2.to_excel(writer, 'CostByMonth')
+    writeStatsToFile(df2, 'CostByMonth__Summary')
+    df3.to_excel(writer, 'CostByMonthAndType')
+    writeStatsToFile(df3, 'CostByMonthAndType__Summary')
     writer.save()
     return
 
 df00 = cleanSpreadsheet(testPath)
-print(getCostByType(df00))
-#print(getCostByType(df00))
-#print(getCostByType(newDF))
+writeToExcel(df00)

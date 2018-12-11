@@ -1,2 +1,5 @@
 input.xlsx
 output.xlsx
+CostByMonth__Summary.txt
+CostByMonthAndType__Summary.txt
+CostByType__Summary.txt
