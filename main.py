@@ -1,3 +1,4 @@
+import sys
 import pandas as pd
 import numpy as np
 from tabulate import tabulate
@@ -51,10 +52,9 @@ def writeStatsToFile(df, filename):
     df.describe().to_csv(filename+'.txt', header=False, index=True, sep=' ')
 
 def writeToExcel(df):
-    df0 = cleanSpreadsheet(testPath)
-    df1 = getCostByType(df0)
-    df2 = getCostByMonth(df0)
-    df3 = getCostByMonthAndType(df0)
+    df1 = getCostByType(df)
+    df2 = getCostByMonth(df)
+    df3 = getCostByMonthAndType(df)
     writer = pd.ExcelWriter('output.xlsx')
     df1.to_excel(writer, 'CostByType')
     writeStatsToFile(df1, 'CostByType__Summary')
@@ -69,5 +69,9 @@ def writeToExcel(df):
     print('Successfully created output.xlsx')
     return
 
-df00 = cleanSpreadsheet(testPath)
-writeToExcel(df00)
+# Now ask for input
+user_input = raw_input("Input the cost journal file path: ") or 'input.xlsx'
+
+df0 = cleanSpreadsheet(user_input)
+
+writeToExcel(df0)
