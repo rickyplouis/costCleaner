@@ -59,10 +59,14 @@ def writeToExcel(df):
     df1.to_excel(writer, 'CostByType')
     writeStatsToFile(df1, 'CostByType__Summary')
     df2.to_excel(writer, 'CostByMonth')
+    print('Successfully created CostByMonth.txt')
     writeStatsToFile(df2, 'CostByMonth__Summary')
     df3.to_excel(writer, 'CostByMonthAndType')
+    print('Successfully created CostByMonthAndType.txt')
     writeStatsToFile(df3, 'CostByMonthAndType__Summary')
+    print('Successfully created CostByMonthAndType__Summary.txt')
     writer.save()
+    print('Successfully created output.xlsx')
     return
 
 df00 = cleanSpreadsheet(testPath)
