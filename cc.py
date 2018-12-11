@@ -11,7 +11,7 @@ def cleanSpreadsheet(filepath):
     cleanedDF = df.drop(['Unnamed: 0','Unnamed: 1','Trans#', 'Record#', 'Unnamed: 3', 'Description/Job', 'Vendor/Employee/Equipment', 'Unnamed: 8'], axis=1)
     # drops row if any of the cells are blank
     cleanedDF = cleanedDF.dropna(axis=0, how='any')
-    print(cleanedDF)
+    cleanedDF = convertIndex(cleanedDF)
     return cleanedDF
 
 
@@ -26,6 +26,9 @@ def sortByDate(df):
 def getCostByMonth(df):
     return df.resample('M')['Cost'].sum()
 
+def getCostByType(df):
+    return df.groupby(['Cost Type'])['Cost'].sum()
+
 newDF = cleanSpreadsheet(testPath)
-newDF = convertIndex(newDF)
 print(getCostByMonth(newDF))
+print(getCostByType(newDF))
