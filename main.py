@@ -50,23 +50,23 @@ def getCostByMonthAndType(df):
 
 def writeStatsToFile(df, filename):
     df.describe().to_csv(filename+'.txt', header=False, index=True, sep=' ')
+    print('Successfully created'+filename+'.txt')
+    return
 
-def writeToExcel(df):
+def createFiles(listOfDf, listofPaths):
+    writer = pd.ExcelWriter('output.xlsx')
+    for df, path in zip(listOfDf, listofPaths):
+        df.to_excel(writer, path)
+        writeStatsToFile(df, path+'__Summary')
+    writer.save()
+    print('Successfully created output.xlsx')
+    return
+
+def writer(df):
     df1 = getCostByType(df)
     df2 = getCostByMonth(df)
     df3 = getCostByMonthAndType(df)
-    writer = pd.ExcelWriter('output.xlsx')
-    df1.to_excel(writer, 'CostByType')
-    writeStatsToFile(df1, 'CostByType__Summary')
-    df2.to_excel(writer, 'CostByMonth')
-    print('Successfully created CostByMonth.txt')
-    writeStatsToFile(df2, 'CostByMonth__Summary')
-    df3.to_excel(writer, 'CostByMonthAndType')
-    print('Successfully created CostByMonthAndType.txt')
-    writeStatsToFile(df3, 'CostByMonthAndType__Summary')
-    print('Successfully created CostByMonthAndType__Summary.txt')
-    writer.save()
-    print('Successfully created output.xlsx')
+    createFiles([df1, df2, df3], ['CostByType', 'CostByMonth', 'CostByMonthAndType'])
     return
 
 # Now ask for input
@@ -74,4 +74,4 @@ user_input = raw_input("Input the cost journal file path: ") or 'input.xlsx'
 
 df0 = cleanSpreadsheet(user_input)
 
-writeToExcel(df0)
+writer(df0)
