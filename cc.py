@@ -1,6 +1,6 @@
 import pandas as pd
 from tabulate import tabulate
-testPath = 'sampleCostJournal.xlsx'
+testPath = 'input.xlsx'
 
 def cleanSpreadsheet(filepath):
     # import dat
@@ -29,6 +29,17 @@ def getCostByMonth(df):
 def getCostByType(df):
     return df.groupby(['Cost Type'])['Cost'].sum()
 
-newDF = cleanSpreadsheet(testPath)
-print(getCostByMonth(newDF))
-print(getCostByType(newDF))
+def getCostByMonthAndType(df):
+    return df.groupby([df.index.month, 'Cost Type'])['Cost'].sum()
+
+df0 = cleanSpreadsheet(testPath)
+df1 = getCostByType(df0)
+df2 = getCostByMonth(df0)
+df3 = getCostByMonthAndType(df0)
+#print(getCostByMonth(newDF))
+#print(getCostByType(newDF))
+writer = pd.ExcelWriter('output.xlsx')
+df1.to_excel(writer, 'Sheet1')
+df2.to_excel(writer, 'Sheet2')
+df3.to_excel(writer, 'Sheet3')
+writer.save()
