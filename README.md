@@ -5,11 +5,11 @@
 2. Run default script
 
 ```
-$ python cc.py
+$ python main.py
 ```
 
-3. Run as cmd line
+3. Deleting outputted files
 
 ```
-$ python cc.py filename
+$ python cleanOutputs.py
 ```
