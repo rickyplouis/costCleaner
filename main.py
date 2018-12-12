@@ -29,10 +29,6 @@ def convertIndex(df):
     df.index = pd.to_datetime(df['Date'])
     return df
 
-def sortByDate(df):
-    sortedDF = df.groupby('Date')
-    return sortedDF
-
 def getCostByMonth(df):
     newDF = df.groupby([df.index.month])['Cost'].sum()
     newDF.index.rename('Month', inplace=True)
