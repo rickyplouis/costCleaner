@@ -29,10 +29,15 @@ def convertIndex(df):
     df.index = pd.to_datetime(df['Date'])
     return df
 
+def createCostPercentageCol(df):
+    totalCost = df['Cost'].sum()
+    df['Cost %'] = df.apply(lambda x: x.Cost / totalCost, axis=1)
+    return df
+
 def getCostByMonth(df):
     newDF = df.groupby([df.index.month])['Cost'].sum()
     newDF.index.rename('Month', inplace=True)
-    return newDF
+    return createCostPercentageCol(pd.DataFrame(newDF))
 
 def getCostByType(df):
     newDF = df.replace({'Cost Type': costCodes})
@@ -58,16 +63,19 @@ def createFiles(listOfDf, listofPaths):
     print('Successfully created output.xlsx')
     return
 
-def writer(df):
+def main(df):
     df1 = getCostByType(df)
     df2 = getCostByMonth(df)
     df3 = getCostByMonthAndType(df)
     createFiles([df1, df2, df3], ['CostByType', 'CostByMonth', 'CostByMonthAndType'])
     return
 
-# Now ask for input
+# 1. Ask for user input
 user_input = raw_input("Input the cost journal file path: ") or 'input.xlsx'
-
+# 2. Clean spreadsheet input
 df0 = cleanSpreadsheet(user_input)
+# 3. Run program on cleaned spreadsheet
+main(df0)
 
-writer(df0)
+#testDF = cleanSpreadsheet('input.xlsx')
+#getCostByMonth(testDF)
