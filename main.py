@@ -41,7 +41,8 @@ def getCostByMonth(df):
 
 def getCostByType(df):
     newDF = df.replace({'Cost Type': costCodes})
-    return newDF.groupby(['Cost Type'])['Cost'].sum()
+    newDF = newDF.groupby(['Cost Type'])['Cost'].sum()
+    return createCostPercentageCol(pd.DataFrame(newDF))
 
 def getCostByMonthAndType(df):
     newDF = df.replace({'Cost Type': costCodes})
@@ -78,4 +79,3 @@ df0 = cleanSpreadsheet(user_input)
 main(df0)
 
 #testDF = cleanSpreadsheet('input.xlsx')
-#getCostByMonth(testDF)
