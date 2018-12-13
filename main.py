@@ -21,7 +21,6 @@ def convertIndex(df):
     df.index = pd.to_datetime(df['Date'])
     return df
 
-
 def writeStatsToFile(df, filename):
     df.describe().to_csv(filename+'.txt', header=False, index=True, sep=' ')
     print('Successfully created'+filename+'.txt')
@@ -44,10 +43,32 @@ def main(df):
     return
 
 # 1. Ask for user input
-user_input = raw_input("Input the cost journal file path: ") or 'input.xlsx'
+#user_input = raw_input("Input the cost journal file path: ") or 'input.xlsx'
 # 2. Clean spreadsheet input
-df0 = cleanSpreadsheet(user_input)
+#df0 = cleanSpreadsheet(user_input)
 # 3. Run program on cleaned spreadsheet
-main(df0)
+#main(df0)
 
-#testDF = cleanSpreadsheet('input.xlsx')
+def getMaxCost(df):
+    return df.loc[df['Cost'].idxmax()]
+
+def getMinCost(df):
+    return df.loc[df['Cost'].idxmin()]
+
+
+def cashFormat(num):
+    return '${:,.2f}'.format(num)
+
+def percentageFormat(num):
+    return int(num * 100)
+
+testDF = analysis.getCostByType(cleanSpreadsheet('input.xlsx'))
+
+
+def maxOrMinText(df, getMax):
+    row = getMaxCost(df) if getMax else getMinCost(df)
+    typeOfCost = 'highest' if getMax else 'lowest'
+    return 'The ' + typeOfCost + ' cost was ' + row.name + ' at ' + str(cashFormat(row['Cost'])) + ' which equals ' + str(percentageFormat(row['Cost %'])) + '% of total costs'
+
+print(maxOrMinText(testDF, True))
+print(maxOrMinText(testDF, False))
