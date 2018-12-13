@@ -2,16 +2,8 @@ import sys
 import pandas as pd
 import numpy as np
 from tabulate import tabulate
+import analysis
 testPath = 'input.xlsx'
-
-costCodes = {
-    1: 'Material',
-    2: 'Labor',
-    3: 'Equipment',
-    4: 'Subcontractors',
-    5: 'Other',
-    6: 'Ready Mix'
-}
 
 def cleanSpreadsheet(filepath):
     # import dat
@@ -29,26 +21,6 @@ def convertIndex(df):
     df.index = pd.to_datetime(df['Date'])
     return df
 
-def createCostPercentageCol(df):
-    totalCost = df['Cost'].sum()
-    df['Cost %'] = df.apply(lambda x: x.Cost / totalCost, axis=1)
-    return df
-
-def getCostByMonth(df):
-    newDF = df.groupby([df.index.month])['Cost'].sum()
-    newDF.index.rename('Month', inplace=True)
-    return createCostPercentageCol(pd.DataFrame(newDF))
-
-def getCostByType(df):
-    newDF = df.replace({'Cost Type': costCodes})
-    newDF = newDF.groupby(['Cost Type'])['Cost'].sum()
-    return createCostPercentageCol(pd.DataFrame(newDF))
-
-def getCostByMonthAndType(df):
-    newDF = df.replace({'Cost Type': costCodes})
-    newDF = newDF.groupby([df.index.month, 'Cost Type'])['Cost'].sum()
-    newDF.index.rename(['Month', 'Cost Type'], inplace=True)
-    return newDF
 
 def writeStatsToFile(df, filename):
     df.describe().to_csv(filename+'.txt', header=False, index=True, sep=' ')
@@ -65,9 +37,9 @@ def createFiles(listOfDf, listofPaths):
     return
 
 def main(df):
-    df1 = getCostByType(df)
-    df2 = getCostByMonth(df)
-    df3 = getCostByMonthAndType(df)
+    df1 = analysis.getCostByType(df)
+    df2 = analysis.getCostByMonth(df)
+    df3 = analysis.getCostByMonthAndType(df)
     createFiles([df1, df2, df3], ['CostByType', 'CostByMonth', 'CostByMonthAndType'])
     return
 
