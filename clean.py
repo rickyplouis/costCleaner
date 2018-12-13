@@ -1,6 +1,6 @@
 import os
 
-outputFiles = ['CostByType__Summary.txt', 'CostByMonth__Summary.txt', 'CostByMonthAndType__Summary.txt', 'output.xlsx']
+outputFiles = ['CostByType__Summary.txt', 'CostByMonth__Summary.txt', 'CostByMonthAndType__Summary.txt', 'Test.txt', 'output.xlsx']
 
 def removeFiles(listOfFiles):
     print('Successfully removed all output files')

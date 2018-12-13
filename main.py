@@ -49,12 +49,8 @@ def main(df):
 # 3. Run program on cleaned spreadsheet
 #main(df0)
 
-def getMaxCost(df):
-    return df.loc[df['Cost'].idxmax()]
-
-def getMinCost(df):
-    return df.loc[df['Cost'].idxmin()]
-
+def getMaxOrMinCost(df, isMax):
+    return df.loc[df['Cost'].idxmax()] if isMax else df.loc[df['Cost'].idxmin()]
 
 def cashFormat(num):
     return '${:,.2f}'.format(num)
@@ -64,11 +60,19 @@ def percentageFormat(num):
 
 testDF = analysis.getCostByType(cleanSpreadsheet('input.xlsx'))
 
-
-def maxOrMinText(df, getMax):
-    row = getMaxCost(df) if getMax else getMinCost(df)
-    typeOfCost = 'highest' if getMax else 'lowest'
+def maxOrMinText(df, isMax):
+    row = getMaxOrMinCost(df, isMax)
+    typeOfCost = 'highest' if isMax else 'lowest'
     return 'The ' + typeOfCost + ' cost was ' + row.name + ' at ' + str(cashFormat(row['Cost'])) + ' which equals ' + str(percentageFormat(row['Cost %'])) + '% of total costs'
 
-print(maxOrMinText(testDF, True))
-print(maxOrMinText(testDF, False))
+def writeTemplate(df, txt):
+    file = ''
+    for line in txt:
+        file += line + '\n'
+    text_file = open("Test.txt", "w")
+    text_file.write(file)
+
+maxText = maxOrMinText(testDF, True)
+minText = maxOrMinText(testDF, False)
+
+writeTemplate(testDF, [maxText, minText])
