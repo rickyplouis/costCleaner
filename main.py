@@ -44,3 +44,6 @@ user_input = raw_input("Input the cost journal file path: ") or 'input.xlsx'
 df0 = cleanSpreadsheet(user_input)
 # 3. Run program on cleaned spreadsheet
 main(df0)
+
+#testDF = cleanSpreadsheet('input.xlsx')
+#writer.secondMaxType(testDF)
