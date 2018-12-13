@@ -58,21 +58,37 @@ def cashFormat(num):
 def percentageFormat(num):
     return int(num * 100)
 
-testDF = analysis.getCostByType(cleanSpreadsheet('input.xlsx'))
-
 def maxOrMinText(df, isMax):
     row = getMaxOrMinCost(df, isMax)
     typeOfCost = 'highest' if isMax else 'lowest'
     return 'The ' + typeOfCost + ' cost was ' + row.name + ' at ' + str(cashFormat(row['Cost'])) + ' which equals ' + str(percentageFormat(row['Cost %'])) + '% of total costs'
 
+def sumText(df):
+    totalCost = df['Cost'].sum()
+    return 'The sum of all costs is ' + str(cashFormat(totalCost))
+
+def avgText(df):
+    avgCost = df['Cost'].mean()
+    return 'The average of all costs is ' + str(cashFormat(avgCost))
+
 def writeTemplate(df, txt):
     file = ''
     for line in txt:
         file += line + '\n'
-    text_file = open("Test.txt", "w")
+    filename = txt[0].replace(" ", "_")+'__Summary.txt'
+    text_file = open(filename, "w")
     text_file.write(file)
 
-maxText = maxOrMinText(testDF, True)
-minText = maxOrMinText(testDF, False)
+typeDF = analysis.getCostByType(cleanSpreadsheet('input.xlsx'))
+monthDF = analysis.getCostByMonth(cleanSpreadsheet('input.xlsx'))
 
-writeTemplate(testDF, [maxText, minText])
+typeMax = maxOrMinText(typeDF, True)
+typeMin = maxOrMinText(typeDF, False)
+typeSum = sumText(typeDF)
+typeAvg = avgText(typeDF)
+
+monthSum = sumText(monthDF)
+
+costByTypeText = ['Cost By Type', typeSum, typeAvg, typeMax, typeMin]
+costByMonthText = ['Cost By Month', monthSum]
+writeTemplate(typeDF, costByTypeText)
