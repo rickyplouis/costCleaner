@@ -1,5 +1,5 @@
+"""Write dataframes to files."""
 import analysis
-import pandas as pd
 
 monthCodes = {
     1: 'January',
@@ -27,18 +27,27 @@ costCodes = {
 
 
 def getMaxOrMinCost(df, isMax):
-    return df.loc[df['Cost'].idxmax()] if isMax else df.loc[df['Cost'].idxmin()]
+    """Returns max or min cost."""
+    index = df['Cost'].idxmax() if isMax else df['Cost'].idxmin()
+    return df.loc[index]
+
 
 def cashFormat(num):
+    """Converts number to cash format"""
     return '${:,.2f}'.format(num)
 
+
 def percentageFormat(num):
+    """Converts number to percentage format"""
     return round(num * 100, 2)
 
+
 def maxOrMinText(df, isMax):
+    """Writes line of text for max or min cost of dataframe"""
     row = getMaxOrMinCost(df, isMax)
     typeOfCost = 'highest' if isMax else 'lowest'
     return 'The ' + typeOfCost + ' cost was for ' + row.name + ' at ' + str(cashFormat(row['Cost'])) + ' which equals ' + str(percentageFormat(row['Cost %'])) + '% of total costs'
+
 
 def secondMaxOrMinType(df, isMax):
     newDF = df.groupby(['Cost Type'])['Cost'].sum()
@@ -49,10 +58,12 @@ def secondMaxOrMinType(df, isMax):
     typeOfVal = 'highest' if isMax else 'lowest'
     return 'The second ' + typeOfVal + ' cost was ' + type + ' at ' + str(cashFormat(val)) + ' which equals ' + str(percentageFormat(percentage)) + '% of total costs'
 
+
 def maxOrMinMonth(df, isMax):
     row = getMaxOrMinCost(df, isMax)
     typeOfCost = 'highest' if isMax else 'lowest'
     return 'The ' + typeOfCost + ' cost was for the month of ' + monthCodes[row.name] + ' at ' + str(cashFormat(row['Cost'])) + ' which equals ' + str(percentageFormat(row['Cost %'])) + '% of total costs'
+
 
 def secondMaxOrMinMonth(df, isMax):
     newDF = df.groupby(['Month'])['Cost'].sum()
@@ -63,13 +74,16 @@ def secondMaxOrMinMonth(df, isMax):
     typeOfVal = 'highest' if isMax else 'lowest'
     return 'The second ' + typeOfVal + ' month was ' + monthCodes[typeIndex] + ' at ' + str(cashFormat(val)) + ' which equals ' + str(percentageFormat(percentage)) + '% of total costs'
 
+
 def sumText(df):
     totalCost = df['Cost'].sum()
     return 'The sum of all costs is ' + str(cashFormat(totalCost))
 
+
 def avgText(df):
     avgCost = df['Cost'].mean()
     return 'The average of all costs is ' + str(cashFormat(avgCost))
+
 
 def writeTemplate(df, txt):
     file = ''
@@ -80,6 +94,7 @@ def writeTemplate(df, txt):
     text_file.write(file)
     print 'Successfully created ' + filename
     return
+
 
 def createTextFiles(df):
     typeDF = analysis.getCostByType(df)
@@ -98,13 +113,16 @@ def createTextFiles(df):
     monthMin = maxOrMinMonth(monthDF, False)
     monthMin2 = secondMaxOrMinMonth(monthDF, False)
     monthAvg = avgText(monthDF)
-    costByTypeText = ['Cost By Type', typeSum, typeAvg, typeMax, typeMax2, typeMin, typeMin2]
-    costByMonthText = ['Cost By Month', monthSum, monthAvg, monthMax, monthMax2, monthMin, monthMin2]
+    costByTypeText = ['Cost By Type', typeSum, typeAvg,
+                      typeMax, typeMax2, typeMin, typeMin2]
+    costByMonthText = ['Cost By Month', monthSum, monthAvg,
+                       monthMax, monthMax2, monthMin, monthMin2]
     plotDF(monthDF, costByMonthText[0])
     plotDF(typeDF, costByTypeText[0])
     writeTemplate(typeDF, costByTypeText)
     writeTemplate(monthDF, costByMonthText)
     return
+
 
 def plotDF(df, title):
     filename = title.replace(" ", "_")+'__Summary.png'

@@ -6,6 +6,7 @@ testPath = 'input.xlsx'
 
 
 def cleanSpreadsheet(filepath):
+    """Prepare spreadsheet for conversion to dataframe."""
     # import dat
     data = pd.ExcelFile(filepath)
     # create dataframe
@@ -22,11 +23,13 @@ def cleanSpreadsheet(filepath):
 
 
 def convertIndex(df):
+    """Convert index to datetime index."""
     df.index = pd.to_datetime(df['Date'])
     return df
 
 
 def createSpreadsheet(listOfDf, listofPaths):
+    """Take in list of paths and write them to spreadsheet."""
     writer = pd.ExcelWriter('output.xlsx')
     for df, path in zip(listOfDf, listofPaths):
         df.to_excel(writer, path)
@@ -36,6 +39,7 @@ def createSpreadsheet(listOfDf, listofPaths):
 
 
 def main(df):
+    """Execute spreadsheet and text file generator."""
     df1 = analysis.getCostByType(df)
     df2 = analysis.getCostByMonth(df)
     df3 = analysis.getCostByMonthAndType(df)
