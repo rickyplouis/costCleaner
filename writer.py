@@ -78,6 +78,8 @@ def writeTemplate(df, txt):
     filename = txt[0].replace(" ", "_")+'__Summary.txt'
     text_file = open(filename, "w")
     text_file.write(file)
+    print 'Successfully created ' + filename
+    return
 
 def createTextFiles(df):
     typeDF = analysis.getCostByType(df)
@@ -99,10 +101,14 @@ def createTextFiles(df):
     costByTypeText = ['Cost By Type', typeSum, typeAvg, typeMax, typeMax2, typeMin, typeMin2]
     costByMonthText = ['Cost By Month', monthSum, monthAvg, monthMax, monthMax2, monthMin, monthMin2]
     plotDF(monthDF, costByMonthText[0])
-    plotDF(typeDF, costByTypeText[0])    
+    plotDF(typeDF, costByTypeText[0])
     writeTemplate(typeDF, costByTypeText)
     writeTemplate(monthDF, costByMonthText)
+    return
 
 def plotDF(df, title):
+    filename = title.replace(" ", "_")+'__Summary.png'
     plot = df['Cost'].plot.bar()
-    plot.get_figure().savefig(title.replace(" ", "_")+'__Summary.png')
+    plot.get_figure().savefig(filename)
+    print 'Successfully created ' + filename
+    return
