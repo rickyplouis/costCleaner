@@ -43,7 +43,7 @@ def main(df):
     df1 = analysis.getCostByType(df)
     df2 = analysis.getCostByMonth(df)
     df3 = analysis.getCostByMonthAndType(df)
-    writer.createTextFiles(df)
+    writer.createSummaryStats(df)
     fileNames = ['CostByType', 'CostByMonth', 'CostByMonthAndType']
     createSpreadsheet([df1, df2, df3], fileNames)
     return
